@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question View | StackIt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #E74C3C;
+      --primary-dark: #C0392B;
+      --primary-light: #FDEDEC;
+      --secondary: #F5F7FA;
+      --text-primary: #2C3E50;
+      --text-secondary: #7F8C8D;
+      --border: #E0E0E0;
+      --white: #FFFFFF;
+      --success: #27AE60;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: var(--white);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      height: 78px;
+      width: auto;
+    }
+
+    .product-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .nav-main {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .login-btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .login-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* Notification Bell */
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .notification-dropdown {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 350px;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000;
+    }
+
+    .notification-dropdown.show {
+      display: block;
+    }
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .notification-item.unread {
+      background-color: var(--primary-light);
+    }
+
+    .notification-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 70px;
+      right: -300px;
+      width: 250px;
+      background-color: var(--white);
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      padding: 1rem;
+      transition: right 0.3s ease;
+      z-index: 999;
+    }
+
+    .mobile-menu.show {
+      right: 0;
+    }
+
+    .mobile-menu-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mobile-menu-item:hover {
+      color: var(--primary);
+    }
+
+    /* User Avatar */
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-btn:hover {
+      background-color: var(--secondary);
+    }
+
+    .filter-btn.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Question Container */
+    .question-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .question-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .question-body {
+      display: flex;
+      margin-bottom: 2rem;
+    }
+
+    .question-content {
+      flex: 1;
+    }
+
+    .question-text {
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .question-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 0.25rem 0.75rem;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border-radius: 4px;
+      font-size: 0.875rem;
+      text-decoration: none;
+    }
+
+    .question-author {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .question-author a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Voting Controls */
+    .vote-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 1.5rem;
+      min-width: 40px;
+    }
+
+    .vote-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .vote-btn:hover {
+      color: var(--primary);
+    }
+
+    .vote-btn.active {
+      color: var(--primary);
+    }
+
+    .vote-count {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0.5rem 0;
+    }
+
+    /* Answers Section */
+    .answers-section {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .answers-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .answers-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .answers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .answer {
+      display: flex;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .answer:last-child {
+      border-bottom: none;
+    }
+
+    .answer.accepted {
+      background-color: #f8fff8;
+      border-left: 3px solid var(--success);
+      padding-left: 1rem;
+      border-radius: 4px;
+    }
+
+    .answer-content {
+      flex: 1;
+    }
+
+    .answer-text {
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .answer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .answer-author {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .answer-author a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .answer-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .accept-btn {
+      background-color: var(--success);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .accept-btn.accepted {
+      background-color: var(--text-secondary);
+    }
+
+    /* Answer Form */
+    .answer-form-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+
+    .form-header {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .editor-container {
+      height: 200px;
+      margin-bottom: 1.5rem;
+    }
+
+    .submit-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .submit-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .login-prompt {
+      background-color: var(--primary-light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .login-prompt a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+      }
+
+      .nav-actions {
+        gap: 0.5rem;
+      }
+
+      .notification-bell {
+        padding: 0.25rem;
+      }
+
+      .login-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+      }
+
+      .question-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .question-body {
+        flex-direction: column;
+      }
+
+      .vote-controls {
+        flex-direction: row;
+        margin-right: 0;
+        margin-bottom: 1rem;
+        justify-content: flex-start;
+      }
+
+      .answer {
+        flex-direction: column;
+      }
+
+      .answer-meta {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .answer-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+
+      .filters {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="assets/StackItlogo.png" alt="StackIt" class="logo">
+      
+    </div>
+    
+    <div class="nav-main">
+      <div class="nav-links">
+        <a href="screen1.html" class="nav-link active">Home</a>
+        <a href="screen2.html" class="nav-link">Ask Question</a>
+      </div>
+      
+      <div class="nav-actions">
+    <a href="login.html" class="login-btn">Login</a>
+     
+</div>
+        <div class="nav-actions">
+    <a href="register.html" class="login-btn">Register</a>
+    
+</div>
+        
+        <div class="notification-bell" id="notificationBell">
+          <i class="fas fa-bell"></i>
+          <span class="notification-count" id="notificationCount">3</span>
+          <div class="notification-dropdown" id="notificationDropdown">
+            <div class="notification-item unread">
+              <strong>sarah_dev</strong> answered your question
+              <div class="notification-time">2 minutes ago</div>
+            </div>
+            <div class="notification-item unread">
+              <strong>john_doe</strong> mentioned you in a comment
+              <div class="notification-time">1 hour ago</div>
+            </div>
+            <div class="notification-item">
+              <strong>admin</strong> sent a platform update
+              <div class="notification-time">1 day ago</div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-item" onclick="navigateTo('view.html')">
+        <i class="fas fa-home"></i> Home
+      </div>
+      <div class="mobile-menu-item" onclick="navigateTo('ask.html')">
+        <i class="fas fa-question"></i> Ask Question
+      </div>
+      <div class="mobile-menu-item" onclick="showLoginModal()">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </div>
+      <div class="mobile-menu-item" onclick="filterQuestions('newest')">
+        <i class="fas fa-clock"></i> Newest
+      </div>
+      <div class="mobile-menu-item" onclick="filterQuestions('unanswered')">
+        <i class="fas fa-question-circle"></i> Unanswered
+      </div>
+      <div class="mobile-menu-item" onclick="filterQuestions('top')">
+        <i class="fas fa-fire"></i> Top Questions
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Filters -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterQuestions('newest')">
+        <i class="fas fa-clock"></i> Newest
+      </button>
+      <button class="filter-btn" onclick="filterQuestions('unanswered')">
+        <i class="fas fa-question-circle"></i> Unanswered
+      </button>
+      <button class="filter-btn" onclick="filterQuestions('top')">
+        <i class="fas fa-fire"></i> Top Questions
+      </button>
+    </div>
+    
+    <!-- Question -->
+    <div class="question-container">
+      <div class="question-header">
+        <h1 class="question-title">How to center a div vertically and horizontally?</h1>
+        <a href="ask.html" class="ask-btn" style="padding: 0.5rem 1rem; background-color: var(--primary); color: white; border-radius: 4px; text-decoration: none;">Ask Question</a>
+      </div>
+      
+      <div class="question-body">
+        <div class="vote-controls">
+          <button class="vote-btn" onclick="voteQuestion('up')">▲</button>
+          <div class="vote-count" id="questionVotes">24</div>
+          <button class="vote-btn" onclick="voteQuestion('down')">▼</button>
+        </div>
+        <div class="question-content">
+          <div class="question-text">
+            I've tried using display: flex with justify-content: center and align-items: center but it's not working in older browsers. What's the most compatible solution?
+          </div>
+          <div class="question-meta">
+            <div class="question-tags">
+              <a href="#" class="tag">css</a>
+              <a href="#" class="tag">flexbox</a>
+              <a href="#" class="tag">compatibility</a>
+            </div>
+            <div class="question-author">
+              Asked <strong>2 hours ago</strong> by <a href="#">webdev123</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Answers Section -->
+    <div class="answers-section">
+      <div class="answers-header">
+        <h2 class="answers-title" id="answersCount">3 Answers</h2>
+      </div>
+
+      <div class="answers-list" id="answersList">
+        <!-- Answer 1 -->
+        <div class="answer accepted" id="answer-a1">
+          <div class="vote-controls">
+            <button class="vote-btn active" onclick="voteAnswer('a1', 'up')">▲</button>
+            <div class="vote-count" id="votes-a1">15</div>
+            <button class="vote-btn" onclick="voteAnswer('a1', 'down')">▼</button>
+          </div>
+          <div class="answer-content">
+            <div class="answer-text">
+              <p>The most compatible cross-browser solution is to use absolute positioning with transform:</p>
+              <pre><code>.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}</code></pre>
+              <p>This works in IE9+ and all modern browsers. For IE8, you'll need a different approach.</p>
+            </div>
+            <div class="answer-meta">
+              <div class="answer-author">
+                Answered <strong>1 hour ago</strong> by <a href="#">css_expert</a>
+              </div>
+              <div class="answer-actions">
+                <button class="accept-btn accepted" onclick="acceptAnswer('a1')">
+                  Accepted
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Answer 2 -->
+        <div class="answer" id="answer-a2">
+          <div class="vote-controls">
+            <button class="vote-btn" onclick="voteAnswer('a2', 'up')">▲</button>
+            <div class="vote-count" id="votes-a2">8</div>
+            <button class="vote-btn" onclick="voteAnswer('a2', 'down')">▼</button>
+          </div>
+          <div class="answer-content">
+            <div class="answer-text">
+              <p>For IE8 support, you can use this approach:</p>
+              <pre><code>.parent {
+  display: table;
+}
+.child {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}</code></pre>
+            </div>
+            <div class="answer-meta">
+              <div class="answer-author">
+                Answered <strong>45 minutes ago</strong> by <a href="#">legacy_specialist</a>
+              </div>
+              <div class="answer-actions">
+                <button class="accept-btn" onclick="acceptAnswer('a2')">
+                  Accept Answer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Answer 3 -->
+        <div class="answer" id="answer-a3">
+          <div class="vote-controls">
+            <button class="vote-btn" onclick="voteAnswer('a3', 'up')">▲</button>
+            <div class="vote-count" id="votes-a3">5</div>
+            <button class="vote-btn" onclick="voteAnswer('a3', 'down')">▼</button>
+          </div>
+          <div class="answer-content">
+            <div class="answer-text">
+              <p>Another approach is to use margin auto with fixed dimensions:</p>
+              <pre><code>.center {
+  width: 300px;
+  height: 200px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+}</code></pre>
+            </div>
+            <div class="answer-meta">
+              <div class="answer-author">
+                Answered <strong>30 minutes ago</strong> by <a href="#">frontend_wizard</a>
+              </div>
+              <div class="answer-actions">
+                <button class="accept-btn" onclick="acceptAnswer('a3')">
+                  Accept Answer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Answer Form -->
+    <div class="answer-form-container">
+      <h3 class="form-header">Your Answer</h3>
+      <div class="editor-container" id="editor"></div>
+      <button class="submit-btn" id="submitAnswerBtn">Post Your Answer</button>
+      
+      <div class="login-prompt" id="loginPrompt" style="display: none;">
+        <p>Please <a href="#">login</a> to post an answer.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quill Editor -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  
+  <script>
+    // Initialize Quill editor
+    const quill = new Quill('#editor', {
+      theme: 'snow',
+      placeholder: 'Write your answer here...',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline'],
+          ['code-block', 'blockquote'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['link', 'image'],
+          ['clean']
+        ]
+      }
+    });
+
+    // DOM Elements
+    const answersList = document.getElementById('answersList');
+    const answersCount = document.getElementById('answersCount');
+    const submitAnswerBtn = document.getElementById('submitAnswerBtn');
+    const loginPrompt = document.getElementById('loginPrompt');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const notificationCount = document.getElementById('notificationCount');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    // Sample data
+    const currentUser = {
+      id: "user123",
+      name: "Current User",
+      avatar: "assets/user-avatar.jpg",
+      isQuestionOwner: true
+    };
+
+    const question = {
+      id: "q1",
+      title: "How to center a div vertically and horizontally?",
+      body: "I've tried using display: flex with justify-content: center and align-items: center but it's not working in older browsers. What's the most compatible solution?",
+      votes: 24,
+      tags: ["css", "flexbox", "compatibility"],
+      author: {
+        id: "user456",
+        name: "webdev123",
+        avatar: "assets/user1.jpg"
+      },
+      createdAt: "2023-05-15T10:30:00Z"
+    };
+
+    const answers = [
+      {
+        id: "a1",
+        body: `<p>The most compatible cross-browser solution is to use absolute positioning with transform:</p>
+               <pre><code>.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}</code></pre>
+               <p>This works in IE9+ and all modern browsers. For IE8, you'll need a different approach.</p>`,
+        votes: 15,
+        isAccepted: true,
+        author: {
+          id: "user789",
+          name: "css_expert",
+          avatar: "assets/user2.jpg"
+        },
+        createdAt: "2023-05-15T11:30:00Z"
+      },
+      {
+        id: "a2",
+        body: `<p>For IE8 support, you can use this approach:</p>
+               <pre><code>.parent {
+  display: table;
+}
+.child {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}</code></pre>`,
+        votes: 8,
+        isAccepted: false,
+        author: {
+          id: "user101",
+          name: "legacy_specialist",
+          avatar: "assets/user3.jpg"
+        },
+        createdAt: "2023-05-15T11:45:00Z"
+      },
+      {
+        id: "a3",
+        body: `<p>Another approach is to use margin auto with fixed dimensions:</p>
+               <pre><code>.center {
+  width: 300px;
+  height: 200px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+}</code></pre>`,
+        votes: 5,
+        isAccepted: false,
+        author: {
+          id: "user112",
+          name: "frontend_wizard",
+          avatar: "assets/user4.jpg"
+        },
+        createdAt: "2023-05-15T12:00:00Z"
+      }
+    ];
+
+    // Mobile menu toggle
+    mobileMenuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      mobileMenu.classList.toggle('show');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function() {
+      mobileMenu.classList.remove('show');
+    });
+
+    // Notification system
+    notificationBell.addEventListener('click', function(e) {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('show');
+      
+      // Mark notifications as read
+      document.querySelectorAll('.notification-item.unread').forEach(item => {
+        item.classList.remove('unread');
+      });
+      notificationCount.textContent = '0';
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+      notificationDropdown.classList.remove('show');
+    });
+
+    function navigateTo(url) {
+      window.location.href = url;
+      mobileMenu.classList.remove('show');
+    }
+
+    function showLoginModal() {
+      console.log('Show login modal');
+      mobileMenu.classList.remove('show');
+      // Implement your login modal here
+    }
+
+    function filterQuestions(type) {
+      // Update active filter button
+      filterButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.toLowerCase().includes(type)) {
+          btn.classList.add('active');
+        }
+      });
+      
+      console.log(`Filtering by: ${type}`);
+      mobileMenu.classList.remove('show');
+      
+      // Here you would implement actual filtering of answers
+      // For demo purposes, we'll just log it
+      switch(type) {
+        case 'newest':
+          answers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          break;
+        case 'unanswered':
+          // In a real app, you would filter for questions with no answers
+          console.log('Showing unanswered questions');
+          break;
+        case 'top':
+          answers.sort((a, b) => b.votes - a.votes);
+          break;
+      }
+      
+      renderAnswers();
+    }
+
+    function renderAnswers() {
+      answersList.innerHTML = '';
+      answersCount.textContent = `${answers.length} Answers`;
+      
+      answers.forEach(answer => {
+        const answerEl = document.createElement('div');
+        answerEl.className = `answer ${answer.isAccepted ? 'accepted' : ''}`;
+        answerEl.id = `answer-${answer.id}`;
+        answerEl.innerHTML = `
+          <div class="vote-controls">
+            <button class="vote-btn ${answer.votes > 0 ? 'active' : ''}" onclick="voteAnswer('${answer.id}', 'up')">▲</button>
+            <div class="vote-count" id="votes-${answer.id}">${answer.votes}</div>
+            <button class="vote-btn ${answer.votes < 0 ? 'active' : ''}" onclick="voteAnswer('${answer.id}', 'down')">▼</button>
+          </div>
+          <div class="answer-content">
+            <div class="answer-text">${answer.body}</div>
+            <div class="answer-meta">
+              <div class="answer-author">
+                Answered <strong>${formatTime(answer.createdAt)}</strong> by 
+                <a href="#">${answer.author.name}</a>
+              </div>
+              ${currentUser.isQuestionOwner ? `
+                <div class="answer-actions">
+                  <button class="accept-btn ${answer.isAccepted ? 'accepted' : ''}" 
+                    onclick="acceptAnswer('${answer.id}')">
+                    ${answer.isAccepted ? 'Accepted' : 'Accept Answer'}
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        answersList.appendChild(answerEl);
+      });
+    }
+
+    function formatTime(isoString) {
+      const now = new Date();
+      const date = new Date(isoString);
+      const diff = now - date;
+      
+      const minutes = Math.floor(diff / (1000 * 60));
+      if (minutes < 60) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+      
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+      
+      const days = Math.floor(hours / 24);
+      return `${days} day${days !== 1 ? 's' : ''} ago`;
+    }
+
+    function voteQuestion(direction) {
+      if (direction === 'up') {
+        question.votes++;
+      } else {
+        question.votes--;
+      }
+      document.getElementById('questionVotes').textContent = question.votes;
+      console.log(`Voted ${direction} on question`);
+    }
+
+    function voteAnswer(answerId, direction) {
+      const answer = answers.find(a => a.id === answerId);
+      if (!answer) return;
+      
+      if (direction === 'up') {
+        answer.votes++;
+      } else {
+        answer.votes--;
+      }
+      
+      document.getElementById(`votes-${answerId}`).textContent = answer.votes;
+      console.log(`Voted ${direction} on answer ${answerId}`);
+    }
+
+    function acceptAnswer(answerId) {
+      answers.forEach(answer => {
+        answer.isAccepted = answer.id === answerId;
+      });
+      renderAnswers();
+      console.log(`Accepted answer ${answerId}`);
+    }
+
+    submitAnswerBtn.addEventListener('click', function() {
+      const content = quill.root.innerHTML;
+      if (content.trim() === '<p><br></p>') {
+        alert('Please write an answer before submitting');
+        return;
+      }
+      
+      // Create new answer
+      const newAnswer = {
+        id: `a${answers.length + 1}`,
+        body: content,
+        votes: 0,
+        isAccepted: false,
+        author: {
+          id: currentUser.id,
+          name: currentUser.name,
+          avatar: currentUser.avatar
+        },
+        createdAt: new Date().toISOString()
+      };
+      
+      answers.push(newAnswer);
+      renderAnswers();
+      quill.root.innerHTML = '';
+      
+      console.log('Answer submitted:', newAnswer);
+    });
+
+    // Initial render
+    renderAnswers();
+
+    // Check if user is logged in (demo)
+    const isLoggedIn = true; // Change to false to see login prompt
+    if (!isLoggedIn) {
+      loginPrompt.style.display = 'block';
+      submitAnswerBtn.style.display = 'none';
+    }
+  </script>
+</body>
+</html>

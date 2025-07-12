@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Guidelines | StackIt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #E74C3C;
+      --primary-dark: #C0392B;
+      --primary-light: #FDEDEC;
+      --secondary: #F5F7FA;
+      --text-primary: #2C3E50;
+      --text-secondary: #7F8C8D;
+      --border: #E0E0E0;
+      --white: #FFFFFF;
+      --success: #27AE60;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Navigation - Consistent with other pages */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: var(--white);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      height: 78px;
+      width: auto;
+    }
+
+    .product-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .nav-main {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .main-nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .main-nav-link {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      white-space: nowrap;
+      padding: 0.5rem 0;
+    }
+
+    .main-nav-link.active {
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .ask-question-btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .ask-question-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Guidelines Content */
+    .guidelines-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .guidelines-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .guidelines-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .guidelines-subtitle {
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .guideline-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .guideline-list {
+      list-style-type: none;
+    }
+
+    .guideline-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 1rem;
+    }
+
+    .guideline-item:last-child {
+      border-bottom: none;
+    }
+
+    .guideline-icon {
+      color: var(--primary);
+      font-size: 1.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .guideline-content h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .guideline-content p {
+      color: var(--text-secondary);
+    }
+
+    .policy-card {
+      background-color: var(--secondary);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .policy-card h4 {
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+      }
+
+      .container {
+        padding: 0 0.5rem;
+      }
+
+      .guidelines-container {
+        padding: 1.5rem;
+      }
+
+      .guideline-item {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    
+    <div class="nav-brand">
+      <img src="assets/StackItlogo.png" alt="StackIt" class="logo">
+    </div>
+    
+    <div class="nav-main">
+      <div class="main-nav-links">
+        <a href="screen1.html" class="main-nav-link">Home</a>
+        <a href="screen2.html" class="ask-question-btn">Ask Question</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    
+    <div class="guidelines-container">
+        <a href="screen2.html" class="back-button" style="margin-right: 10px; padding: 8px 12px; background: var(--primary-light); border-radius: 4px; color: var(--primary); text-decoration: none;">
+  <i class="fas fa-arrow-left"></i> Back
+</a>
+      <div class="guidelines-header">
+        <h1 class="guidelines-title">Community Guidelines</h1>
+        <p class="guidelines-subtitle">Our rules and expectations for participation in the StackIt community</p>
+      </div>
+      
+      <div class="guideline-section">
+        <h2 class="section-title">
+          <i class="fas fa-handshake"></i>
+          Be Respectful
+        </h2>
+        <ul class="guideline-list">
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Civil Discourse</h4>
+              <p>Treat others with respect, even when you disagree. No personal attacks, insults, or harassment.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-globe"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Inclusive Language</h4>
+              <p>Use inclusive language and avoid terms that could be offensive to others.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Professionalism</h4>
+              <p>Remember this is a professional community. Avoid inappropriate content and language.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="guideline-section">
+        <h2 class="section-title">
+          <i class="fas fa-lightbulb"></i>
+          Contribute Helpfully
+        </h2>
+        <ul class="guideline-list">
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-question"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Ask Clear Questions</h4>
+              <p>Follow our question guidelines to ask clear, answerable questions.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-reply"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Provide Useful Answers</h4>
+              <p>When answering, be thorough and explain your solution clearly.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-edit"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Improve Content</h4>
+              <p>Edit questions and answers to make them clearer and more useful for others.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="guideline-section">
+        <h2 class="section-title">
+          <i class="fas fa-exclamation-triangle"></i>
+          Prohibited Behavior
+        </h2>
+        <ul class="guideline-list">
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-ban"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>No Spam or Self-Promotion</h4>
+              <p>Don't post spam, advertisements, or excessive self-promotion.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-copyright"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Respect Copyright</h4>
+              <p>Only post content you have the right to share. Give proper attribution.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-lock"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>No Private Information</h4>
+              <p>Don't post personal or confidential information about yourself or others.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="guideline-section">
+        <h2 class="section-title">
+          <i class="fas fa-balance-scale"></i>
+          Enforcement Policies
+        </h2>
+        
+        <div class="policy-card">
+          <h4>Content Moderation</h4>
+          <p>We reserve the right to remove any content that violates these guidelines without notice. Repeated violations may result in account suspension or banning.</p>
+        </div>
+        
+        <div class="policy-card">
+          <h4>Reporting Issues</h4>
+          <p>If you see behavior that violates these guidelines, please report it using the "Flag" option on posts or by contacting our moderation team.</p>
+        </div>
+        
+        <div class="policy-card">
+          <h4>Appeals</h4>
+          <p>If you believe your content was removed in error or wish to appeal a moderation decision, contact us at moderation@stackit.com.</p>
+        </div>
+      </div>
+      
+      <div class="guideline-section">
+        <h2 class="section-title">
+          <i class="fas fa-heart"></i>
+          Our Community Values
+        </h2>
+        <p style="margin-bottom: 1.5rem;">StackIt is built on the principles of knowledge sharing, mutual respect, and professional growth. We believe:</p>
+        
+        <ul class="guideline-list">
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Everyone Can Learn</h4>
+              <p>No question is too basic if it's asked sincerely and with effort.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-hands-helping"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Sharing Knowledge is Powerful</h4>
+              <p>When you teach others, you reinforce your own understanding.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-code-branch"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Collaboration Drives Innovation</h4>
+              <p>Great solutions come from many minds working together.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

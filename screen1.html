@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question View | StackIt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #E74C3C;
+      --primary-dark: #C0392B;
+      --primary-light: #FDEDEC;
+      --secondary: #F5F7FA;
+      --text-primary: #2C3E50;
+      --text-secondary: #7F8C8D;
+      --border: #E0E0E0;
+      --white: #FFFFFF;
+      --success: #27AE60;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: var(--white);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      height: 78px;
+      width: auto;
+    }
+
+    .product-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .nav-main {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .login-btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .login-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* Notification Bell */
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .notification-dropdown {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 350px;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000;
+    }
+
+    .notification-dropdown.show {
+      display: block;
+    }
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .notification-item.unread {
+      background-color: var(--primary-light);
+    }
+
+    .notification-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 70px;
+      right: -300px;
+      width: 250px;
+      background-color: var(--white);
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      padding: 1rem;
+      transition: right 0.3s ease;
+      z-index: 999;
+    }
+
+    .mobile-menu.show {
+      right: 0;
+    }
+
+    .mobile-menu-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mobile-menu-item:hover {
+      color: var(--primary);
+    }
+
+    /* User Avatar */
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-btn:hover {
+      background-color: var(--secondary);
+    }
+
+    .filter-btn.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Question Container */
+    .question-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .question-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .question-body {
+      display: flex;
+      margin-bottom: 2rem;
+    }
+
+    .question-content {
+      flex: 1;
+    }
+
+    .question-text {
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .question-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 0.25rem 0.75rem;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border-radius: 4px;
+      font-size: 0.875rem;
+      text-decoration: none;
+    }
+
+    .question-author {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .question-author a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Voting Controls */
+    .vote-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 1.5rem;
+      min-width: 40px;
+    }
+
+    .vote-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .vote-btn:hover {
+      color: var(--primary);
+    }
+
+    .vote-btn.active {
+      color: var(--primary);
+    }
+
+    .vote-count {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0.5rem 0;
+    }
+
+    /* Answers Section */
+    .answers-section {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .answers-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .answers-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .answers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .answer {
+      display: flex;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .answer:last-child {
+      border-bottom: none;
+    }
+
+    .answer.accepted {
+      background-color: #f8fff8;
+      border-left: 3px solid var(--success);
+      padding-left: 1rem;
+      border-radius: 4px;
+    }
+
+    .answer-content {
+      flex: 1;
+    }
+
+    .answer-text {
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .answer-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .answer-author {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .answer-author a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .answer-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .accept-btn {
+      background-color: var(--success);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .accept-btn.accepted {
+      background-color: var(--text-secondary);
+    }
+
+    /* Answer Form */
+    .answer-form-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+    }
+
+    .form-header {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .editor-container {
+      height: 200px;
+      margin-bottom: 1.5rem;
+    }
+
+    .submit-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .submit-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .login-prompt {
+      background-color: var(--primary-light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .login-prompt a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+      }
+
+      .nav-actions {
+        gap: 0.5rem;
+      }
+
+      .notification-bell {
+        padding: 0.25rem;
+      }
+
+      .login-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        text-decoration: none; 
+      }
+
+      .question-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .question-body {
+        flex-direction: column;
+      }
+
+      .vote-controls {
+        flex-direction: row;
+        margin-right: 0;
+        margin-bottom: 1rem;
+        justify-content: flex-start;
+      }
+
+      .answer {
+        flex-direction: column;
+      }
+
+      .answer-meta {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+
+      .answer-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+    
+    .containers input {
+      width: 50%;
+      padding: 10px;
+      margin-left: 200px;
+      margin-top: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="assets/StackItlogo.png" alt="StackIt" class="logo">
+      
+    </div>
+    
+    <div class="nav-main">
+      <div class="nav-links">
+        <a href="view.html" class="nav-link active">Home</a>
+        <a href="ask.html" class="nav-link">Ask Question</a>
+        <a class="login-btn" href="login.html" class="nav-link">login</a>
+        <a class="login-btn" href="register.html" class="nav-link">Register</a>
+      </div>
+      
+      <div class="nav-actions">
+        <div class="notification-bell" id="notificationBell">
+          <i class="fas fa-bell"></i>
+          <span class="notification-count" id="notificationCount">3</span>
+          <div class="notification-dropdown" id="notificationDropdown">
+            <div class="notification-item unread">
+              <strong>sarah_dev</strong> answered your question
+              <div class="notification-time">2 minutes ago</div>
+            </div>
+            <div class="notification-item unread">
+              <strong>john_doe</strong> mentioned you in a comment
+              <div class="notification-time">1 hour ago</div>
+            </div>
+            <div class="notification-item">
+              <strong>admin</strong> sent a platform update
+              <div class="notification-time">1 day ago</div>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-item" onclick="navigateTo('view.html')">
+        <i class="fas fa-home"></i> Home
+      </div>
+      <div class="mobile-menu-item" onclick="navigateTo('ask.html')">
+        <i class="fas fa-question"></i> Ask Question
+      </div>
+      <div class="mobile-menu-item" onclick="showLoginModal()">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </div>
+      <div class="mobile-menu-item" onclick="filterQuestions('newest')">
+        <i class="fas fa-clock"></i> Newest
+      </div>
+      <div class="mobile-menu-item" onclick="filterQuestions('unanswered')">
+        <i class="fas fa-question-circle"></i> Unanswered
+      </div>
+      <div class="mobile-menu-item" onclick="filterQuestions('top')">
+        <i class="fas fa-fire"></i> Top Questions
+      </div>
+    </div>
+  </nav>
+  <div class="containers">
+      <input type="text" id="name" placeholder="search" required />
+  </div>
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Filters -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterQuestions('newest')">
+        <i class="fas fa-clock"></i> Newest
+      </button>
+      <button class="filter-btn" onclick="filterQuestions('unanswered')">
+        <i class="fas fa-question-circle"></i> Unanswered
+      </button>
+      <button class="filter-btn" onclick="filterQuestions('top')">
+        <i class="fas fa-fire"></i> Top Questions
+      </button>
+    </div>
+    
+    <!-- Question -->
+    <div class="question-container">
+      <div class="question-header">
+        <h1 class="question-title">How to center a div vertically and horizontally?</h1>
+        <a href="ask.html" class="ask-btn" style="padding: 0.5rem 1rem; background-color: var(--primary); color: white; border-radius: 4px; text-decoration: none;">Ask Question</a>
+      </div>
+      
+      <div class="question-body">
+        <div class="question-content">
+          <div class="question-text">
+            I've tried using display: flex with justify-content: center and align-items: center but it's not working in older browsers. What's the most compatible solution?
+          </div>
+          <div class="question-meta">
+            <div class="question-tags">
+              <a href="#" class="tag">css</a>
+              <a href="#" class="tag">flexbox</a>
+              <a href="#" class="tag">compatibility</a>
+            </div>
+            <div class="question-author">
+              Asked <strong>2 hours ago</strong> by <a href="#">webdev123</a>
+              <h2 class="answers-title" id="answersCount">3 Answers</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="question-container">
+      <div class="question-header">
+        <h1 class="question-title">How to center a div vertically and horizontally?</h1>
+        <a href="ask.html" class="ask-btn" style="padding: 0.5rem 1rem; background-color: var(--primary); color: white; border-radius: 4px; text-decoration: none;">Ask Question</a>
+      </div>
+      
+      <div class="question-body">
+        <div class="question-content">
+          <div class="question-text">
+            I've tried using display: flex with justify-content: center and align-items: center but it's not working in older browsers. What's the most compatible solution?
+          </div>
+          <div class="question-meta">
+            <div class="question-tags">
+              <a href="#" class="tag">css</a>
+              <a href="#" class="tag">flexbox</a>
+              <a href="#" class="tag">compatibility</a>
+            </div>
+            <div class="question-author">
+              Asked <strong>2 hours ago</strong> by <a href="#">webdev123</a>
+              <h2 class="answers-title" id="answersCount">3 Answers</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="question-container">
+      <div class="question-header">
+        <h1 class="question-title">How to center a div vertically and horizontally?</h1>
+        <a href="ask.html" class="ask-btn" style="padding: 0.5rem 1rem; background-color: var(--primary); color: white; border-radius: 4px; text-decoration: none;">Ask Question</a>
+      </div>
+      
+      <div class="question-body">
+        <div class="question-content">
+          <div class="question-text">
+            I've tried using display: flex with justify-content: center and align-items: center but it's not working in older browsers. What's the most compatible solution?
+          </div>
+          <div class="question-meta">
+            <div class="question-tags">
+              <a href="#" class="tag">css</a>
+              <a href="#" class="tag">flexbox</a>
+              <a href="#" class="tag">compatibility</a>
+            </div>
+            <div class="question-author">
+              Asked <strong>2 hours ago</strong> by <a href="#">webdev123</a>
+              <h2 class="answers-title" id="answersCount">3 Answers</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Answers Section -->
+    
+
+  </body>
+</html>

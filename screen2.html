@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ask Question | StackIt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #E74C3C;
+      --primary-dark: #C0392B;
+      --primary-light: #FDEDEC;
+      --secondary: #F5F7FA;
+      --text-primary: #2C3E50;
+      --text-secondary: #7F8C8D;
+      --border: #E0E0E0;
+      --white: #FFFFFF;
+      --success: #27AE60;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Navigation - Consistent with view.html */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: var(--white);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      height: 78px;
+      width: auto;
+    }
+
+    .product-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .nav-main {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .main-nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .main-nav-link {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      white-space: nowrap;
+      padding: 0.5rem 0;
+    }
+
+    .main-nav-link.active {
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .ask-question-btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .ask-question-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .login-btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .login-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .notification-bell {
+      position: relative;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .notification-dropdown {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 350px;
+      max-height: 400px;
+      overflow-y: auto;
+      display: none;
+      z-index: 1000;
+    }
+
+    .notification-dropdown.show {
+      display: block;
+    }
+
+    .notification-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .notification-item.unread {
+      background-color: var(--primary-light);
+    }
+
+    .notification-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 70px;
+      right: -300px;
+      width: 250px;
+      background-color: var(--white);
+      box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+      padding: 1rem;
+      transition: right 0.3s ease;
+      z-index: 999;
+    }
+
+    .mobile-menu.show {
+      right: 0;
+    }
+
+    .mobile-menu-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mobile-menu-item:hover {
+      color: var(--primary);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Ask Question Form */
+    .ask-form-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-header {
+      margin-bottom: 2rem;
+    }
+
+    .form-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-subtitle {
+      color: var(--text-secondary);
+    }
+
+    .form-subtitle a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .form-subtitle a:hover {
+      text-decoration: underline;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-header label {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .character-counter {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+
+    .form-hint {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    .editor-container {
+      height: 300px;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Tags Input */
+    .tags-input-container {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .tags-input-container:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+
+    .tags-display {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      padding: 0.25rem 0.75rem;
+      background-color: var(--primary-light);
+      color: var(--primary);
+      border-radius: 4px;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tag-remove {
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    .tags-input {
+      flex: 1;
+      min-width: 150px;
+      border: none;
+      outline: none;
+      padding: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .tags-suggestions {
+      display: none;
+      position: absolute;
+      background-color: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 100;
+      margin-top: 0.25rem;
+    }
+
+    .tags-suggestions.show {
+      display: block;
+    }
+
+    .tag-suggestion {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+
+    .tag-suggestion:hover {
+      background-color: var(--secondary);
+    }
+
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background-color: var(--white);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--secondary);
+    }
+
+    .form-footer {
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    .form-footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Preview Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
+    .modal-content {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-light);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+      }
+
+      .nav-main {
+        gap: 1rem;
+      }
+
+      .main-nav-links {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .ask-question-btn {
+        padding: 0.5rem 0.75rem;
+      }
+
+      .login-btn {
+        padding: 0.5rem 0.75rem;
+      }
+
+      .notification-dropdown {
+        width: 280px;
+        right: -50px;
+      }
+
+      .container {
+        padding: 0 0.5rem;
+      }
+
+      .ask-form-container {
+        padding: 1.5rem;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation - Consistent with view.html -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="assets/StackItlogo.png" alt="StackIt" class="logo">
+      
+    </div>
+    
+    <div class="nav-main">
+      <div class="main-nav-links">
+        <a href="screen1.html" class="main-nav-link">Home</a>
+        <a href="screen2.html" class="ask-question-btn">Ask Question</a>
+      </div>
+          
+      <div class="nav-actions">
+    <a href="login.html" class="login-btn">Login</a>
+     
+</div>
+        <div class="nav-actions">
+    <a href="register.html" class="login-btn">Register</a>
+    
+</div>
+        <div class="notification-bell" id="notificationBell">
+          <i class="fas fa-bell"></i>
+          <span class="notification-count" id="notificationCount">3</span>
+          <div class="notification-dropdown" id="notificationDropdown">
+            <div class="notification-item unread">
+              <strong>sarah_dev</strong> answered your question
+              <div class="notification-time">2 minutes ago</div>
+            </div>
+            <div class="notification-item unread">
+              <strong>john_doe</strong> mentioned you in a comment
+              <div class="notification-time">1 hour ago</div>
+            </div>
+            <div class="notification-item">
+              <strong>admin</strong> sent a platform update
+              <div class="notification-time">1 day ago</div>
+            </div>
+          </div>
+        </div>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-item" onclick="navigateTo('view.html')">
+        <i class="fas fa-home"></i> Home
+      </div>
+      <div class="mobile-menu-item" onclick="navigateTo('ask.html')">
+        <i class="fas fa-question"></i> Ask Question
+      </div>
+      <div class="mobile-menu-item" onclick="showLoginModal()">
+        <i class="fas fa-sign-in-alt"></i> Login
+       
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="ask-form-container">                   
+      <div class="form-header">
+        <h1 class="form-title">Ask a Question</h1>
+        <p class="form-subtitle">Get help from the StackIt community. Follow our <a href="question-guidelines.html">question guidelines</a>.</p>
+      </div>
+      
+      <form id="questionForm">
+        <!-- Question Title -->
+        <div class="form-section">
+          <div class="section-header">
+            <label for="questionTitle">Title</label>
+            <div class="character-counter"><span id="titleCounter">0</span>/120</div>
+          </div>
+          <input type="text" id="questionTitle" class="form-input" placeholder="Be specific and imagine you're asking a question to another person">
+          <p class="form-hint">Example: "Why does my React component re-render unexpectedly when using useState?"</p>
+        </div>
+        
+        <!-- Rich Text Editor -->
+        <div class="form-section">
+          <div class="section-header">
+            <label>Details</label>
+            <div class="character-counter"><span id="detailsCounter">0</span> characters</div>
+          </div>
+          <div id="editor" class="editor-container"></div>
+          <p class="form-hint">Include all the information someone would need to answer your question. Minimum 30 characters.</p>
+        </div>
+        
+        <!-- Tags Input -->
+        <div class="form-section">
+          <div class="section-header">
+            <label for="questionTags">Tags</label>
+            <div class="character-counter"><span id="tagsCounter">0</span>/5</div>
+          </div>
+          <div class="tags-input-container">
+            <div class="tags-display" id="tagsDisplay"></div>
+            <input type="text" id="questionTags" placeholder="Add up to 5 tags (press Enter or comma to add)" class="tags-input">
+            <div class="tags-suggestions" id="tagsSuggestions"></div>
+          </div>
+          <p class="form-hint">Add tags to help others find your question (e.g., javascript, react, node.js)</p>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="previewBtn">
+            <i class="fas fa-eye"></i> Preview
+          </button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <i class="fas fa-paper-plane"></i> Post Question
+          </button>
+        </div>
+        
+        <div class="form-footer">
+          <p>By posting, you agree to our <a href="community-guidelines.html">community guidelines</a> and understand that your question may be edited for clarity.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Preview Modal -->
+  <div class="modal-overlay" id="previewModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Question Preview</h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-content" id="previewContent"></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="backToEdit">Back to Editing</button>
+        <button class="btn btn-primary" id="confirmPost">Post Question</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quill Editor -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  
+  <script>
+    // Initialize Quill editor
+    const quill = new Quill('#editor', {
+      theme: 'snow',
+      placeholder: 'Write your question details here...',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline'],
+          ['code-block', 'blockquote'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['link', 'image'],
+          ['clean']
+        ]
+      }
+    });
+
+    // DOM Elements
+    const questionForm = document.getElementById('questionForm');
+    const previewBtn = document.getElementById('previewBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const previewModal = document.getElementById('previewModal');
+    const modalClose = document.getElementById('modalClose');
+    const backToEdit = document.getElementById('backToEdit');
+    const confirmPost = document.getElementById('confirmPost');
+    const previewContent = document.getElementById('previewContent');
+    const titleCounter = document.getElementById('titleCounter');
+    const detailsCounter = document.getElementById('detailsCounter');
+    const tagsCounter = document.getElementById('tagsCounter');
+    const questionTitle = document.getElementById('questionTitle');
+    const tagsInput = document.getElementById('questionTags');
+    const tagsDisplay = document.getElementById('tagsDisplay');
+    const tagsSuggestions = document.getElementById('tagsSuggestions');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const notificationCount = document.getElementById('notificationCount');
+
+    // Sample tags data
+    const popularTags = [
+      'javascript', 'react', 'node.js', 'html', 'css',
+      'python', 'java', 'c#', 'php', 'ruby',
+      'vue', 'angular', 'typescript', 'express', 'mongodb'
+    ];
+
+    // Current tags
+    let tags = [];
+
+    // Check if user is logged in
+    const isLoggedIn = false; // Change to true to test logged in state
+
+    // Mobile menu toggle
+    mobileMenuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      mobileMenu.classList.toggle('show');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function() {
+      mobileMenu.classList.remove('show');
+    });
+
+    function navigateTo(url) {
+      window.location.href = url;
+      mobileMenu.classList.remove('show');
+    }
+
+    function showLoginModal() {
+      alert('Please login to continue');
+      mobileMenu.classList.remove('show');
+    }
+
+    // Notification system
+    notificationBell.addEventListener('click', function(e) {
+      e.stopPropagation();
+      notificationDropdown.classList.toggle('show');
+      
+      // Mark notifications as read
+      document.querySelectorAll('.notification-item.unread').forEach(item => {
+        item.classList.remove('unread');
+      });
+      notificationCount.textContent = '0';
+    });
+
+    document.addEventListener('click', function() {
+      notificationDropdown.classList.remove('show');
+    });
+
+    // Character counting
+    questionTitle.addEventListener('input', function() {
+      const count = this.value.length;
+      titleCounter.textContent = count;
+      titleCounter.style.color = count > 120 ? 'red' : '';
+    });
+
+    quill.on('text-change', function() {
+      const text = quill.getText().trim();
+      const count = text.length;
+      detailsCounter.textContent = count;
+      detailsCounter.style.color = count < 30 ? 'red' : '';
+    });
+
+    // Tags functionality
+    tagsInput.addEventListener('input', function() {
+      const value = this.value.trim();
+      if (value) {
+        showTagSuggestions(value);
+      } else {
+        hideTagSuggestions();
+      }
+    });
+
+    tagsInput.addEventListener('keydown', function(e) {
+      if ((e.key === 'Enter' || e.key === ',') && this.value.trim()) {
+        e.preventDefault();
+        addTag(this.value.trim());
+        this.value = '';
+        hideTagSuggestions();
+      }
+    });
+
+    function showTagSuggestions(value) {
+      const filtered = popularTags.filter(tag => 
+        tag.toLowerCase().includes(value.toLowerCase()) && 
+        !tags.includes(tag)
+      );
+      
+      if (filtered.length) {
+        tagsSuggestions.innerHTML = filtered.map(tag => `
+          <div class="tag-suggestion" data-tag="${tag}">${tag}</div>
+        `).join('');
+        
+        tagsSuggestions.classList.add('show');
+        
+        document.querySelectorAll('.tag-suggestion').forEach(item => {
+          item.addEventListener('click', function() {
+            addTag(this.dataset.tag);
+            tagsInput.value = '';
+            hideTagSuggestions();
+          });
+        });
+      } else {
+        hideTagSuggestions();
+      }
+    }
+
+    function hideTagSuggestions() {
+      tagsSuggestions.classList.remove('show');
+    }
+
+    function addTag(tag) {
+      if (tags.length >= 5) return;
+      if (!tags.includes(tag)) {
+        tags.push(tag);
+        renderTags();
+        updateTagsCounter();
+      }
+    }
+
+    function removeTag(tag) {
+      tags = tags.filter(t => t !== tag);
+      renderTags();
+      updateTagsCounter();
+    }
+
+    function renderTags() {
+      tagsDisplay.innerHTML = tags.map(tag => `
+        <div class="tag">
+          ${tag}
+          <span class="tag-remove" onclick="removeTag('${tag}')">&times;</span>
+        </div>
+      `).join('');
+    }
+
+    function updateTagsCounter() {
+      tagsCounter.textContent = tags.length;
+      tagsCounter.style.color = tags.length === 0 ? 'red' : '';
+    }
+
+    // Preview functionality
+    previewBtn.addEventListener('click', function() {
+      if (!isLoggedIn) {
+        alert('Please login to preview your question');
+        return;
+      }
+      
+      const title = questionTitle.value;
+      const content = quill.root.innerHTML;
+      
+      if (!title || !content || tags.length === 0) {
+        alert('Please fill in all required fields before previewing');
+        return;
+      }
+      
+      previewContent.innerHTML = `
+        <h2>${title}</h2>
+        <div class="question-content">${content}</div>
+        <div class="question-tags" style="margin-top: 1rem;">
+          ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+        </div>
+      `;
+      
+      previewModal.classList.add('show');
+    });
+
+    modalClose.addEventListener('click', function() {
+      previewModal.classList.remove('show');
+    });
+
+    backToEdit.addEventListener('click', function() {
+      previewModal.classList.remove('show');
+    });
+
+    confirmPost.addEventListener('click', function() {
+      // In a real app, you would submit the form here
+      alert('Question posted successfully!');
+      previewModal.classList.remove('show');
+      questionForm.reset();
+      quill.root.innerHTML = '';
+      tags = [];
+      renderTags();
+      updateTagsCounter();
+    });
+
+    // Form submission
+    questionForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      if (!isLoggedIn) {
+        alert('Please login to post a question');
+        return;
+      }
+      
+      const title = questionTitle.value;
+      const content = quill.getText().trim();
+      const htmlContent = quill.root.innerHTML;
+      
+      if (!title || !content || tags.length === 0) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      if (content.length < 30) {
+        alert('Please provide more details in your question (minimum 30 characters)');
+        return;
+      }
+      
+      if (title.length > 120) {
+        alert('Title must be 120 characters or less');
+        return;
+      }
+      
+      // In a real app, you would submit to your backend here
+      console.log('Submitting question:', {
+        title,
+        content: htmlContent,
+        tags
+      });
+      
+      alert('Question posted successfully!');
+      this.reset();
+      quill.root.innerHTML = '';
+      tags = [];
+      renderTags();
+      updateTagsCounter();
+    });
+  </script>
+</body>
+</html>

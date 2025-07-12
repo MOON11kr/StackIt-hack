@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question Guidelines | StackIt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #E74C3C;
+      --primary-dark: #C0392B;
+      --primary-light: #FDEDEC;
+      --secondary: #F5F7FA;
+      --text-primary: #2C3E50;
+      --text-secondary: #7F8C8D;
+      --border: #E0E0E0;
+      --white: #FFFFFF;
+      --success: #27AE60;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Navigation - Consistent with other pages */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: var(--white);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      height: 78px;
+      width: auto;
+    }
+
+    .product-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .nav-main {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .main-nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .main-nav-link {
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 500;
+      white-space: nowrap;
+      padding: 0.5rem 0;
+    }
+
+    .main-nav-link.active {
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .ask-question-btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .ask-question-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Guidelines Content */
+    .guidelines-container {
+      background-color: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .guidelines-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .guidelines-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .guidelines-subtitle {
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .guideline-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .guideline-list {
+      list-style-type: none;
+    }
+
+    .guideline-item {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 1rem;
+    }
+
+    .guideline-item:last-child {
+      border-bottom: none;
+    }
+
+    .guideline-icon {
+      color: var(--primary);
+      font-size: 1.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .guideline-content h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .guideline-content p {
+      color: var(--text-secondary);
+    }
+
+    .bad-example, .good-example {
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      position: relative;
+    }
+
+    .bad-example {
+      background-color: #FDEDEC;
+      border-left: 4px solid var(--primary);
+    }
+
+    .good-example {
+      background-color: #E8F8F0;
+      border-left: 4px solid var(--success);
+    }
+
+    .example-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bad-example .example-title {
+      color: var(--primary-dark);
+    }
+
+    .good-example .example-title {
+      color: var(--success);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 1rem;
+      }
+
+      .container {
+        padding: 0 0.5rem;
+      }
+
+      .guidelines-container {
+        padding: 1.5rem;
+      }
+
+      .guideline-item {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="assets/StackItlogo.png" alt="StackIt" class="logo">
+      
+    </div>
+    
+    <div class="nav-main">
+      <div class="main-nav-links">
+        <a href="screen3.html" class="main-nav-link">Home</a>
+        <a href="screen2.html" class="ask-question-btn">Ask Question</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="guidelines-container">
+        <a href="screen2.html" class="back-button" style="margin-right: 10px; padding: 8px 12px; background: var(--primary-light); border-radius: 4px; color: var(--primary); text-decoration: none;">
+  <i class="fas fa-arrow-left"></i> Back
+</a>
+      <div class="guidelines-header">
+        <h1 class="guidelines-title">Question Guidelines</h1>
+        <p class="guidelines-subtitle">Learn how to write effective questions that get answers from our community of developers and experts.</p>
+      </div>
+      
+      <div class="guideline-section">
+        <h2 class="section-title">
+          <i class="fas fa-check-circle"></i>
+          How to Write a Good Question
+        </h2>
+        <ul class="guideline-list">
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-search"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Search First</h4>
+              <p>Before asking, search to see if your question has already been answered. Many common questions have been asked before.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-heading"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Be Specific</h4>
+              <p>Your title should summarize the specific problem you're facing, not your general goal.</p>
+              
+              <div class="bad-example">
+                <div class="example-title">
+                  <i class="fas fa-times-circle"></i>
+                  Bad Example
+                </div>
+                <p>"Help with React code"</p>
+              </div>
+              
+              <div class="good-example">
+                <div class="example-title">
+                  <i class="fas fa-check-circle"></i>
+                  Good Example
+                </div>
+                <p>"Why does my React component re-render when passing props that haven't changed?"</p>
+              </div>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-align-left"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Provide Details</h4>
+              <p>Include relevant code, error messages, and what you've already tried. The more context you provide, the better answers you'll get.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-tags"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Tag Appropriately</h4>
+              <p>Use relevant tags to help experts find your question. Don't use more than 5 tags, and avoid creating new tags unless necessary.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="guideline-section">
+        <h2 class="section-title">
+          <i class="fas fa-times-circle"></i>
+          What to Avoid
+        </h2>
+        <ul class="guideline-list">
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-comment-slash"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Don't Ask Opinion-Based Questions</h4>
+              <p>Questions like "What's the best framework?" typically lead to debates rather than answers.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-code"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Don't Post Screenshots of Code</h4>
+              <p>Always post the actual code as text so others can copy/paste and test it.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>No Solicitation</h4>
+              <p>Don't ask people to contact you outside the site or offer to pay for answers.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="guideline-section">
+        <h2 class="section-title">
+          <i class="fas fa-lightbulb"></i>
+          Additional Tips
+        </h2>
+        <ul class="guideline-list">
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-spell-check"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Check Grammar and Spelling</h4>
+              <p>Well-written questions are easier to understand and more likely to get answers.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Be Patient</h4>
+              <p>Good answers often take time. Don't bump your question repeatedly.</p>
+            </div>
+          </li>
+          <li class="guideline-item">
+            <div class="guideline-icon">
+              <i class="fas fa-check"></i>
+            </div>
+            <div class="guideline-content">
+              <h4>Accept Answers</h4>
+              <p>When you get a helpful answer, accept it to mark the question as resolved.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
